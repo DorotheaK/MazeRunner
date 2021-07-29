@@ -1,6 +1,8 @@
 # MazeRunner Project 
 This project is created in 2019 by Susanna Hepp and Antonia Reiter for educational purpose. 
 
+## this is my first header
+
 ![maze](docs/images/monster-maze.png "maze")
 
 ## 1. Maze Runner in Python with MQTT
