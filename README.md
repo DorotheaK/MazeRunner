@@ -2,6 +2,10 @@
 This project is created in 2019 by Susanna Hepp and Antonia Reiter for educational purpose. 
 
 ## this is my first header
+So the cat was stolen.
+The cat goes goes to the garden.
+He wasn't really sorry.
+
 
 ![maze](docs/images/monster-maze.png "maze")
 
