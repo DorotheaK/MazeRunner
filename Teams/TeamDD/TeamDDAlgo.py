@@ -4,8 +4,9 @@ This class is the template class for the Maze solver
 """
 
 # import sys
-# from math import sqrt
-# import queue
+from math import sqrt
+import queue
+# from _typeshed import Self
 from sys import float_repr_style
 import numpy
 import os.path
@@ -28,7 +29,8 @@ class TeamDDAlgo:
         self.endCol = 0
         self.endRow = 0
         self.grid = [[]]
-        self.came_from = []
+        self.cameFrom = dict()
+        self.costSoFar = dict()
         print("\n[TeamDDAlgo]: Constructor TeamDDAlgo successfully executed.")
 
     # Setter method for the maze dimension of the rows
@@ -101,15 +103,12 @@ class TeamDDAlgo:
                 gridSize = numpy.shape(self.grid)
                 self.setDimRows(gridSize[0])
                 self.setDimCols(gridSize[1])
-                print(self.grid)
                 startpoint = self.searchNumber(self.START)
                 self.setStartRow (startpoint[0])
                 self.setStartCol (startpoint[1])
-                print(startpoint)
                 endpoint = self.searchNumber(self.TARGET)
                 self.setEndRow (endpoint[0])
                 self.setEndCol (endpoint[1])
-                print(endpoint)        
                 print("[TeamDDAlgo]: SUCCESS loading file: ", pathToConfigFile)
                 return True
         else:
@@ -158,17 +157,38 @@ class TeamDDAlgo:
 
     # Decides whether a certain row,column grid element is inside the maze or outside
     def isInGrid(self, row, column):
-       return (row > 0 and row < self.dimrows) and (column  >0 and column <self.dimCols)
+       return (row > 0 and row < self.dimRows) and (column  >0 and column <self.dimCols)
     
     def isBlocked(self,row,column):
         return self.grid[row,column]==self.OBSTACLE
 
     # Returns a list of all grid elements neighboured to the grid element row,column
-    def getNeighbours(self, row, column):
+    def getNeighbours(self, cell):
+        print(cell)
+        row = cell[0]
+        print(row)
+        column = cell[1]
+        print(column)
+        potentialNeighbours = self.getAllNeighbours(row, column)
+        return self.findValidNeighbours(potentialNeighbours)
+        
         # TODO: this is you job now :-)
         # TODO: Add a Unit Test Case --> Very good example for boundary tests and condition coverage
 
-        pass
+    def getAllNeighbours(self, row, column):
+        upper = [row - 1, column]
+        left = [row, column - 1]
+        right = [row, column +1]
+        lower = [row + 1, column]
+        return [upper, left, right, lower]
+
+    def findValidNeighbours(self, allNeighbours):
+        validNeighbours = []
+        for neighbour in allNeighbours:
+            if self.isInGrid(neighbour[0], neighbour[1]) and not self.isBlocked(neighbour[0], neighbour[1]):
+                validNeighbours.append(neighbour)
+        return validNeighbours
+
 
     # Gives a grid element as string, the result should be a string row,column
     def gridElementToString(self, row, col):
@@ -183,9 +203,8 @@ class TeamDDAlgo:
     # aGrid and bGrid are both elements [row,column]
 
     def heuristic(self, aGrid, bGrid):
-        # TODO: this is you job now :-)
-        # HINT: a good heuristic could be the distance between to grid elements aGrid and bGrid
-        pass
+        # using Manhattan distance
+        return abs(aGrid[0] - bGrid[0]) + abs(aGrid[1] - bGrid[1])
 
     # Generates the resulting path as string from the came_from list
     def generateResultPath(self, came_from):
@@ -203,8 +222,25 @@ class TeamDDAlgo:
     # implementation taken from https://www.redblobgames.com/pathfinding/a-star/introduction.html
     #############################
     def myMazeSolver(self):
-        # TODO: this is you job now :-)
-        pass
+        frontier = queue.PriorityQueue()
+        frontier.put((0, [self.startRow, self.startCol]))
+        self.cameFrom[(self.startRow, self.startCol)] = None
+        self.costSoFar[(self.startRow, self.startCol)] = 0
+
+        while not frontier.empty():
+            current = frontier.get()[1]
+
+            if current == [self.endRow, self.endCol]:
+                break
+
+            for next in self.getNeighbours(current):
+                newCost = self.costSoFar[current] + 1 # self.cost(current, next)
+                if next not in self.costSoFar or newCost < self.costSoFar[next]:
+                    self.costSoFar[next] = newCost
+                    priority = newCost + self.heuristic((self.endRow, self.endCol), next)
+                    frontier.put(next, priority)
+                    self.cameFrom[next] = current
+
 
     # Command for starting the solving procedure
     def solveMaze(self):
