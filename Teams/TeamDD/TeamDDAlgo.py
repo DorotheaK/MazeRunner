@@ -6,6 +6,7 @@ This class is the template class for the Maze solver
 # import sys
 # from math import sqrt
 # import queue
+from sys import float_repr_style
 import numpy
 import os.path
 
@@ -33,37 +34,36 @@ class TeamDDAlgo:
     # Setter method for the maze dimension of the rows
     def setDimRows(self, rows):
         self.dimRows = rows
-        pass
+        
 
     # Setter method for the maze dimension of the columns
     def setDimCols(self, cols):
         self.dimCols = cols
-        pass
+       
 
     # Setter method for the column of the start position
     def setStartCol(self, col):
         self.startCol = col
-        pass
-
+        
     # Setter method for the row of the start position
     def setStartRow(self, row):
         self.startRow = row
-        pass
+        
 
     # Setter method for the column of the end position
     def setEndCol(self, col):
         self.endCol = col
-        pass
+        
 
     # Setter method for the row of the end position
     def setEndRow(self, row):
         self.endRow = row
-        pass
+        
 
     # Setter method for blocked grid elements
     def setBlocked(self, row, col):
         # TODO: this is you job now :-)
-        pass
+       pass
 
     # Start to build up a new maze
     # HINT: don't forget to initialize all member variables of this class (grid, start position, end position, dimension,...)
@@ -94,28 +94,62 @@ class TeamDDAlgo:
 
         if exists:
             self.grid = numpy.loadtxt(pathToConfigFile, int, delimiter=',')
-            gridSize = numpy.shape(self.grid)
-            self.setDimRows(gridSize[0])
-            self.setDimCols(gridSize[1])
-            startpoint = self.searchNumber(self.START)
-            self.setStartRow = startpoint[0]
-            self.setStartCol = startpoint[1]
-            endpoint = self.searchNumber(self.TARGET)
-            self.setEndRow = endpoint[0]
-            self.setEndCol = endpoint[1]
-            print(self.endRow)
-            print("[TeamDDAlgo]: SUCCESS loading file: ", pathToConfigFile)
+            if self.checkGrid() ==  False:
+                print("Maze is not valid")
+                return False
+            else:
+                gridSize = numpy.shape(self.grid)
+                self.setDimRows(gridSize[0])
+                self.setDimCols(gridSize[1])
+                print(self.grid)
+                startpoint = self.searchNumber(self.START)
+                self.setStartRow (startpoint[0])
+                self.setStartCol (startpoint[1])
+                print(startpoint)
+                endpoint = self.searchNumber(self.TARGET)
+                self.setEndRow (endpoint[0])
+                self.setEndCol (endpoint[1])
+                print(endpoint)        
+                print("[TeamDDAlgo]: SUCCESS loading file: ", pathToConfigFile)
+                return True
         else:
             print("[TeamDDAlgo]: ERROR loading file ", pathToConfigFile)
+            return False
+        
 
-        return True
-    
+    #check grid for corectness
+    def checkGrid(self):
+        print(self.grid)
+        if len(self.grid)==0:
+            return  False
+        elif self.countNumber(self.START) != 1:
+           
+            return  False
+        elif self.countNumber(self.TARGET) !=1:
+            return False
+        else:
+            for nr in range(4,9):
+                if self.countNumber(nr) !=0:
+                    return False
+            return True
+
     # searches for specific number
     def searchNumber(self, number):
-        for row in (0, self.dimRows-1):
-            for column in (0, self.dimCols -1):
+        for row in range(0, self.dimRows):
+            for column in range(0, self.dimCols ):
                 if self.grid[row, column] == number:
-                    return [row, column]
+                    ret = (row,column)
+                    return ret
+
+    # searches for specific number
+    def countNumber(self, number):
+        counter =0
+        for row in range(0, numpy.shape(self.grid)[0]):
+            for column in range(0, numpy.shape(self.grid)[1] ):
+                if self.grid[row, column] == number:                   
+                    counter = counter+1           
+        return counter
+
 
     # clears the complete maze
     def clearMaze(self):
@@ -124,13 +158,16 @@ class TeamDDAlgo:
 
     # Decides whether a certain row,column grid element is inside the maze or outside
     def isInGrid(self, row, column):
-        # TODO: this is you job now :-)
-        pass
+       return (row > 0 and row < self.dimrows) and (column  >0 and column <self.dimCols)
+    
+    def isBlocked(self,row,column):
+        return self.grid[row,column]==self.OBSTACLE
 
     # Returns a list of all grid elements neighboured to the grid element row,column
     def getNeighbours(self, row, column):
         # TODO: this is you job now :-)
         # TODO: Add a Unit Test Case --> Very good example for boundary tests and condition coverage
+
         pass
 
     # Gives a grid element as string, the result should be a string row,column
@@ -140,7 +177,6 @@ class TeamDDAlgo:
     # check whether two different grid elements are identical
     # aGrid and bGrid are both elements [row,column]
     def isSameGridElement(self, aGrid, bGrid):
-        # TODO: this is you job now :-)
         pass
 
     # Defines a heuristic method used for A* algorithm

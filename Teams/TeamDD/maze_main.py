@@ -10,7 +10,7 @@ import os
 import sys
 import timeit
 sys.path.append("../..")
-import TeamTemplateAlgo
+import TeamDDAlgo
 import Framework.Visualizer.maze_visualize
 
 
@@ -26,7 +26,7 @@ apptk.title("MazeRunner")
 apptk.geometry("700x700")
 apptk.resizable(True, True)
 
-alg = TeamTemplateAlgo.TeamTemplateAlgo()
+alg = TeamDDAlgo.TeamDDAlgo()
 
 vis = Framework.Visualizer.maze_visualize.MazeVisualizer(apptk)
 
