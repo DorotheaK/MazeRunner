@@ -3,13 +3,14 @@
 This class is the template class for the Maze solver
 """
 
+import os.path
+import queue
 # import sys
 from math import sqrt
-import queue
 # from _typeshed import Self
 from sys import float_repr_style
+
 import numpy
-import os.path
 
 
 class TeamDDAlgo:
@@ -192,7 +193,7 @@ class TeamDDAlgo:
 
     # Gives a grid element as string, the result should be a string row,column
     def gridElementToString(self, row, col):
-        return row + '#' + col
+        return str(row) + '#' + str(col)
 
     # check whether two different grid elements are identical
     # aGrid and bGrid are both elements [row,column]
@@ -207,10 +208,15 @@ class TeamDDAlgo:
         return abs(aGrid[0] - bGrid[0]) + abs(aGrid[1] - bGrid[1])
 
     # Generates the resulting path as string from the came_from list
-    def generateResultPath(self, came_from):
-        # TODO: this is you job now :-)
-        # HINT: this method is a bit tricky as you have to invert the came_from list (follow the path from end to start)
-        pass
+    def generateResultPath(self):
+        currentstr = self.gridElementToString(self.endRow, self.endCol)
+        path = []
+        while currentstr != self.gridElementToString(self.startRow,self.startCol):
+           path.append (currentstr)           
+           currentstr = self.cameFrom[currentstr]
+        path.append([self.startRow,self.startCol])
+        path.reverse()
+        return path
 
     def getResultPath(self):
         # TODO: this is you job now :-)
@@ -224,8 +230,8 @@ class TeamDDAlgo:
     def myMazeSolver(self):
         frontier = queue.PriorityQueue()
         frontier.put((0, [self.startRow, self.startCol]))
-        self.cameFrom[(self.startRow, self.startCol)] = None
-        self.costSoFar[(self.startRow, self.startCol)] = 0
+        self.cameFrom[self.gridElementToString(self.startRow, self.startCol)] = None
+        self.costSoFar[self.gridElementToString(self.startRow, self.startCol)] = 0
 
         while not frontier.empty():
             current = frontier.get()[1]
@@ -234,14 +240,18 @@ class TeamDDAlgo:
                 break
 
             for next in self.getNeighbours(current):
-                newCost = self.costSoFar[current] + 1 # self.cost(current, next)
-                if next not in self.costSoFar or newCost < self.costSoFar[next]:
-                    self.costSoFar[next] = newCost
+                nextstr = self.gridElementToString(next[0],next[1])
+                newCost = self.costSoFar[self.gridElementToString(current[0],current[1])] + 1 # self.cost(current, next)
+                if nextstr not in self.costSoFar or newCost < self.costSoFar[nextstr]:
+                    self.costSoFar[nextstr] = newCost
                     priority = newCost + self.heuristic((self.endRow, self.endCol), next)
-                    frontier.put(next, priority)
-                    self.cameFrom[next] = current
+                    frontier.put(priority,next)
+                    self.cameFrom[nextstr] = current
 
-
+        path = self.generateResultPath()
+        print(path)
+        return path
+    
     # Command for starting the solving procedure
     def solveMaze(self):
         print("[TeamDDAlgo]: start solving maze... ")
