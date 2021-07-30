@@ -161,6 +161,8 @@ class TeamDDAlgo:
        return (row >= 0 and row < self.dimRows) and (column  >=0 and column <self.dimCols)
     
     def isBlocked(self,row,column):
+        if not self.isInGrid(row, column):
+            return True
         return self.grid[row,column]==self.OBSTACLE
 
     # Returns a list of all grid elements neighboured to the grid element row,column
@@ -172,6 +174,8 @@ class TeamDDAlgo:
         print(column)
         potentialNeighbours = self.getAllNeighbours(row, column)
         return self.findValidNeighbours(potentialNeighbours)
+        result = self.findValidNeighbours(potentialNeighbours)
+        return result
         
         # TODO: this is you job now :-)
         # TODO: Add a Unit Test Case --> Very good example for boundary tests and condition coverage
