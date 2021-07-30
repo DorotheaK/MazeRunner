@@ -6,11 +6,11 @@ This class is the template class for the Maze solver
 # import sys
 # from math import sqrt
 # import queue
-# import numpy
+import numpy
 import os.path
 
 
-class TeamTemplateAlgo:
+class TeamDDAlgo:
 
     EMPTY = 0       # empty cell
     OBSTACLE = 1    # cell with obstacle / blocked cell
@@ -28,36 +28,36 @@ class TeamTemplateAlgo:
         self.endRow = 0
         self.grid = [[]]
         self.came_from = []
-        print("\n[TeamTemplateAlgo]: Constructor TeamTemplateAlgo successfully executed.")
+        print("\n[TeamDDAlgo]: Constructor TeamDDAlgo successfully executed.")
 
     # Setter method for the maze dimension of the rows
     def setDimRows(self, rows):
-        # TODO: this is you job now :-)
+        self.dimRows = rows
         pass
 
     # Setter method for the maze dimension of the columns
     def setDimCols(self, cols):
-        # TODO: this is you job now :-)
+        self.dimCols = cols
         pass
 
     # Setter method for the column of the start position
     def setStartCol(self, col):
-        # TODO: this is you job now :-)
+        self.startCol = col
         pass
 
     # Setter method for the row of the start position
     def setStartRow(self, row):
-        # TODO: this is you job now :-)
+        self.startRow = row
         pass
 
     # Setter method for the column of the end position
     def setEndCol(self, col):
-        # TODO: this is you job now :-)
+        self.endCol = col
         pass
 
     # Setter method for the row of the end position
     def setEndRow(self, row):
-        # TODO: this is you job now :-)
+        self.endRow = row
         pass
 
     # Setter method for blocked grid elements
@@ -82,7 +82,7 @@ class TeamTemplateAlgo:
 
     # just prints a maze on the command line
     def printMaze(self):
-        # TODO: this is you job now :-)
+        # for 
         pass
 
     # loads a maze from a file pathToConfigFile
@@ -93,11 +93,29 @@ class TeamTemplateAlgo:
         exists = os.path.exists(pathToConfigFile)
 
         if exists:
-            print("[TeamTemplateAlgo]: SUCCESS loading file: ", pathToConfigFile)
+            self.grid = numpy.loadtxt(pathToConfigFile, int, delimiter=',')
+            gridSize = numpy.shape(self.grid)
+            self.setDimRows(gridSize[0])
+            self.setDimCols(gridSize[1])
+            startpoint = self.searchNumber(self.START)
+            self.setStartRow = startpoint[0]
+            self.setStartCol = startpoint[1]
+            endpoint = self.searchNumber(self.TARGET)
+            self.setEndRow = endpoint[0]
+            self.setEndCol = endpoint[1]
+            print(self.endRow)
+            print("[TeamDDAlgo]: SUCCESS loading file: ", pathToConfigFile)
         else:
-            print("[TeamTemplateAlgo]: ERROR loading file ", pathToConfigFile)
+            print("[TeamDDAlgo]: ERROR loading file ", pathToConfigFile)
 
         return True
+    
+    # searches for specific number
+    def searchNumber(self, number):
+        for row in (0, self.dimRows-1):
+            for column in (0, self.dimCols -1):
+                if self.grid[row, column] == number:
+                    return [row, column]
 
     # clears the complete maze
     def clearMaze(self):
@@ -117,9 +135,7 @@ class TeamTemplateAlgo:
 
     # Gives a grid element as string, the result should be a string row,column
     def gridElementToString(self, row, col):
-        # TODO: this is you job now :-)
-        # HINT: this method is used as primary key in a lookup table
-        pass
+        return row + '#' + col
 
     # check whether two different grid elements are identical
     # aGrid and bGrid are both elements [row,column]
@@ -156,20 +172,20 @@ class TeamTemplateAlgo:
 
     # Command for starting the solving procedure
     def solveMaze(self):
-        print("[TeamTemplateAlgo]: start solving maze... ")
+        print("[TeamDDAlgo]: start solving maze... ")
         return self.myMazeSolver()
 
 
 if __name__ == '__main__':
-    mg = TeamTemplateAlgo()
+    mg = TeamDDAlgo()
 
     # HINT: in case you want to develop the solver without MQTT messages and without always
     #       loading new different mazes --> just load any maze you would like from a file
 
     mg.loadMaze("..\\..\\MazeExamples\\maze1.txt")
-    print("[TeamTemplateAlgo]: loaded maze", mg.grid)
+    print("[TeamDDAlgo]: loaded maze", mg.grid)
 
     # solve the maze
     # HINT: this command shall be received from MQTT client in run_all mode
     solutionString = mg.solveMaze()
-    print("[TeamTemplateAlgo]: Result of solving maze: ", solutionString)
+    print("[TeamDDAlgo]: Result of solving maze: ", solutionString)
