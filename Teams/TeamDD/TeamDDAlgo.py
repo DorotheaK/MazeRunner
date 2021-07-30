@@ -158,7 +158,7 @@ class TeamDDAlgo:
 
     # Decides whether a certain row,column grid element is inside the maze or outside
     def isInGrid(self, row, column):
-       return (row > 0 and row < self.dimRows) and (column  >0 and column <self.dimCols)
+       return (row >= 0 and row < self.dimRows) and (column  >=0 and column <self.dimCols)
     
     def isBlocked(self,row,column):
         return self.grid[row,column]==self.OBSTACLE
