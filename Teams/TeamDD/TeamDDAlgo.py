@@ -203,8 +203,21 @@ class TeamDDAlgo:
         # using Manhattan distance
         return abs(aGrid[0] - bGrid[0]) + abs(aGrid[1] - bGrid[1])
 
-    # Generates the resulting path as string from the came_from list
-    def generateResultPath(self):
+    # # Generates the resulting path as string from the came_from list
+    # def generateResultPath(self):
+    #     currentstr = self.gridElementToString(self.endRow, self.endCol)
+    #     current = (self.endRow, self.endCol)
+    #     path = []
+    #     path.append(current)
+    #     while currentstr != self.gridElementToString(self.startRow,self.startCol):
+    #        current = self.cameFrom[currentstr]
+    #        path.append (current)     
+    #        currentstr = self.gridElementToString(current[0], current[1])
+    #     path.append([self.startRow,self.startCol])
+    #     path.reverse()
+    #     return path
+
+    def getResultPath(self):
         currentstr = self.gridElementToString(self.endRow, self.endCol)
         current = (self.endRow, self.endCol)
         path = []
@@ -216,10 +229,6 @@ class TeamDDAlgo:
         path.append([self.startRow,self.startCol])
         path.reverse()
         return path
-
-    def getResultPath(self):
-        # TODO: this is you job now :-)
-        pass
 
     #############################
     # Definition of Maze solver algorithm
@@ -246,13 +255,13 @@ class TeamDDAlgo:
                     priority = newCost + self.heuristic((self.endRow, self.endCol), next)
                     frontier.put((priority,next))
                     self.cameFrom[nextstr] = current
-        path = self.generateResultPath()
-        print(path)
+        path = self.getResultPath()
+        # print(path)
         return path
 
     # Command for starting the solving procedure
     def solveMaze(self):
-        print("[TeamDDAlgo]: start solving maze... ")
+        print("[TeamDDAlgo]: start solving maze... ")        
         return self.myMazeSolver()
 
 
@@ -269,3 +278,4 @@ if __name__ == '__main__':
     # HINT: this command shall be received from MQTT client in run_all mode
     solutionString = mg.solveMaze()
     print("[TeamDDAlgo]: Result of solving maze: ", solutionString)
+    
