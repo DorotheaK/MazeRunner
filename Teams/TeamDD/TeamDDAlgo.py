@@ -173,11 +173,15 @@ class TeamDDAlgo:
         return result
         
     def getAllNeighbours(self, row, column):
-        upper = [row - 1, column]
-        left = [row, column - 1]
-        right = [row, column +1]
-        lower = [row + 1, column]
-        return [upper, left, right, lower]
+        upperleft= [row -1, column -1]
+        uppermiddle = [row - 1, column]
+        upperright = [row-1, column +1]
+        middleleft = [row, column -1]
+        middleright = [row, column +1]
+        lowerleft = [row + 1, column -1]
+        lowermiddle = [row + 1, column]
+        lowerright = [row+1,column+1]
+        return [upperleft, uppermiddle, upperright, middleleft,middleright,lowerleft,lowermiddle,lowerright]
 
     def findValidNeighbours(self, allNeighbours):
         validNeighbours = []
