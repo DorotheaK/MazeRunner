@@ -102,7 +102,7 @@ class TeamDDAlgo:
                 return False
             else:
                 gridSize = numpy.shape(self.grid)
-                self.setDimRows(gridSize[0])
+                self.setDimRows(gridSize[0]) 
                 self.setDimCols(gridSize[1])
                 startpoint = self.searchNumber(self.START)
                 self.setStartRow (startpoint[0])
@@ -119,7 +119,6 @@ class TeamDDAlgo:
 
     #check grid for corectness
     def checkGrid(self):
-        print(self.grid)
         if len(self.grid)==0:
             return  False
         elif self.countNumber(self.START) != 1:
@@ -167,19 +166,12 @@ class TeamDDAlgo:
 
     # Returns a list of all grid elements neighboured to the grid element row,column
     def getNeighbours(self, cell):
-        print(cell)
         row = cell[0]
-        print(row)
         column = cell[1]
-        print(column)
         potentialNeighbours = self.getAllNeighbours(row, column)
-        return self.findValidNeighbours(potentialNeighbours)
         result = self.findValidNeighbours(potentialNeighbours)
         return result
         
-        # TODO: this is you job now :-)
-        # TODO: Add a Unit Test Case --> Very good example for boundary tests and condition coverage
-
     def getAllNeighbours(self, row, column):
         upper = [row - 1, column]
         left = [row, column - 1]
@@ -214,10 +206,13 @@ class TeamDDAlgo:
     # Generates the resulting path as string from the came_from list
     def generateResultPath(self):
         currentstr = self.gridElementToString(self.endRow, self.endCol)
+        current = (self.endRow, self.endCol)
         path = []
+        path.append(current)
         while currentstr != self.gridElementToString(self.startRow,self.startCol):
-           path.append (currentstr)           
-           currentstr = self.cameFrom[currentstr]
+           current = self.cameFrom[currentstr]
+           path.append (current)     
+           currentstr = self.gridElementToString(current[0], current[1])
         path.append([self.startRow,self.startCol])
         path.reverse()
         return path
@@ -249,13 +244,12 @@ class TeamDDAlgo:
                 if nextstr not in self.costSoFar or newCost < self.costSoFar[nextstr]:
                     self.costSoFar[nextstr] = newCost
                     priority = newCost + self.heuristic((self.endRow, self.endCol), next)
-                    frontier.put(priority,next)
+                    frontier.put((priority,next))
                     self.cameFrom[nextstr] = current
-
         path = self.generateResultPath()
         print(path)
         return path
-    
+
     # Command for starting the solving procedure
     def solveMaze(self):
         print("[TeamDDAlgo]: start solving maze... ")
@@ -268,7 +262,7 @@ if __name__ == '__main__':
     # HINT: in case you want to develop the solver without MQTT messages and without always
     #       loading new different mazes --> just load any maze you would like from a file
 
-    mg.loadMaze("..\\..\\MazeExamples\\maze1.txt")
+    mg.loadMaze("..\\..\\MazeExamples\\spiral1.txt")
     print("[TeamDDAlgo]: loaded maze", mg.grid)
 
     # solve the maze
