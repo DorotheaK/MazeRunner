@@ -66,7 +66,6 @@ def mainloop():
     alg.solveMaze()
     print("The time difference is :", timeit.default_timer() - starttime)
 
-    
     for move in alg.cameFrom:
         if isinstance(move, str):
             a_list = move.split('#')
